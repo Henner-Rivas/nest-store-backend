@@ -3,7 +3,7 @@
     "env": {
         "API_KEY":"134679",
         "DATABASE_NAME":"MYSQL_DB_Henner",
-        "DATABASE_PORT":3000    },
+        "DATABASE_PORT":"3000"    },
     "builds": [
         {
             "src": "src/main.ts",
