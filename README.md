@@ -45,6 +45,18 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## documentation with swagger
+
+```bash
+http://localhost:3000/docs
+```
+
+## Api en production
+
+```bash
+https://next-store-backend-production.up.railway.app/
+```
+
 ## Test
 
 ```bash
