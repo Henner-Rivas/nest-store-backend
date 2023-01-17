@@ -5,16 +5,12 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get('new')
+  newEndpoint(): string {
+    return 'i am new network';
+  }
   @Get()
   getHello(): string {
     return this.appService.getHello();
   }
-
-
-  @Get('new')
-  newEndpoint(): string {
-    return 'i am new network'
-  }
-
-
 }

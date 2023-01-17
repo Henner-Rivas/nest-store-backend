@@ -7,15 +7,17 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { ProductsService } from './products.service';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
-import { CreateProductDto, UpdateProductDto } from './dto/products.dtos';
-
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @ApiOperation({ summary: 'crea products' })
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
