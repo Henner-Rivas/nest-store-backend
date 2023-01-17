@@ -11,14 +11,14 @@ async function bootstrap() {
     }),
   );
   const config = new DocumentBuilder()
-    .setTitle(' ecommerce')
+    .setTitle('ecommerce')
     .setDescription('The store  API description')
     .setVersion('1.0')
-    .addTag('Store henner')
+    .addTag('Store Henner')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
   app.enableCors();
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
