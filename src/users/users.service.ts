@@ -5,12 +5,14 @@ import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { Order } from './entities/order.entity';
 import { ProductsService } from 'src/products/products.service';
 import { ConfigService } from '@nestjs/config/dist';
+import { Client } from 'pg';
 
 @Injectable()
 export class UsersService {
   constructor(
     private productsService: ProductsService,
     private ConfigService: ConfigService,
+    @Inject('PG') private clientePg: Client,
   ) {}
   private counterId = 1;
   private users = [
@@ -76,5 +78,14 @@ export class UsersService {
       user,
       products: this.productsService.findAll(),
     };
+  }
+
+  getTasks() {
+    return new Promise((resolve, reject) => {
+      this.clientePg.query('SELECT * FROM tasks', (err, result) => {
+        if (err) reject(err);
+        resolve(result.rows);
+      });
+    });
   }
 }
