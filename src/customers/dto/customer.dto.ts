@@ -10,7 +10,6 @@ export class CreateCustomerDto {
   @IsNotEmpty()
   readonly lastName: string;
 
-  @IsPhoneNumber()
   @IsNotEmpty()
   readonly phone: string;
 }
