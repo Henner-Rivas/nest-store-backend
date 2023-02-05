@@ -2,7 +2,7 @@ import { UpdateBrandDto, CreateBrandDto } from './dto/brand.dto';
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { Brand } from './entities/Brand.entity';
+import { Brand } from './entities/brand.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -11,10 +11,13 @@ export class BrandsService {
   constructor(@InjectRepository(Brand) private BrandRepo: Repository<Brand>) {}
 
   findAll() {
-    return this.BrandRepo.find();
+    return this.BrandRepo.find({ relations: ['products'] });
   }
   async findOne(id: number) {
-    const Brand = await this.BrandRepo.findOne({ id });
+    const Brand = await this.BrandRepo.findOne(
+      { id },
+      { relations: ['products'] },
+    );
     if (!Brand) {
       throw new NotFoundException(`Brand #${id} not found`);
     }
