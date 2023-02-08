@@ -1,8 +1,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
-import { User } from './entities/user.entity';
-import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
-import { Order } from './entities/order.entity';
+import { User } from '../entities/user.entity';
+import { CreateUserDto, UpdateUserDto } from '../dto/user.dto';
+import { Order } from '../entities/order.entity';
 import { ProductsService } from 'src/products/products.service';
 import { ConfigService } from '@nestjs/config/dist';
 import { InjectRepository } from '@nestjs/typeorm';

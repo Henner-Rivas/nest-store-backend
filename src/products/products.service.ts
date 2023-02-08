@@ -1,8 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
+import {
+  CreateProductDto,
+  FilterProductsDto,
+  UpdateProductDto,
+} from './dto/product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { Between, FindConditions, Repository } from 'typeorm';
 import { BrandsService } from 'src/brands/brands.service';
 import { Brand } from 'src/brands/entities/brand.entity';
 import { Category } from 'src/categories/entities/category.entity';
@@ -28,7 +32,20 @@ export class ProductsService {
     return this.productRepo.save(newProduct);
   }
 
-  findAll() {
+  findAll(params?: FilterProductsDto) {
+    if (params) {
+      const { limit, offset, minPrice, maxPrice } = params;
+      const where: FindConditions<Product> = {};
+      if (minPrice && maxPrice) {
+        where.price = Between(minPrice, maxPrice);
+      }
+      return this.productRepo.find({
+        relations: ['brand'],
+        take: limit,
+        skip: offset,
+        where,
+      });
+    }
     return this.productRepo.find({ relations: ['brand'] });
   }
 
@@ -52,10 +69,45 @@ export class ProductsService {
       product.brand = brand;
     }
 
+    if (changes.categoriesIds) {
+      const categories = await this.categoryRepo.findByIds(
+        changes.categoriesIds,
+      );
+      product.categories = categories;
+    }
+
     this.productRepo.merge(product, changes);
     return this.productRepo.save(product);
   }
   remove(id: number) {
     return this.productRepo.delete(id);
+  }
+
+  async addCategoryToProduct(productId: number, categoryId: number) {
+    const product = await this.productRepo.findOne(productId, {
+      relations: ['categories', 'brand'],
+    });
+    if (!product) {
+      throw new NotFoundException(`Product #${productId} not found`);
+    }
+    const category = await this.categoryRepo.findOne(categoryId);
+    if (!category) {
+      throw new NotFoundException(`Category #${categoryId} not found`);
+    }
+    if (!product.categories.find((item) => item.id == categoryId)) {
+      product.categories.push(category);
+    }
+    return this.productRepo.save(product);
+  }
+
+  async removeCategoryByProduct(productId: number, categoryId: number) {
+    const product = await this.productRepo.findOne(productId, {
+      relations: ['categories'],
+    });
+    product.categories = product.categories.filter(
+      (item) => item.id != categoryId,
+    );
+
+    return this.productRepo.save(product);
   }
 }

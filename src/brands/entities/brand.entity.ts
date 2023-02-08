@@ -12,12 +12,18 @@ export class Brand {
   image: string;
 
   @Column({
+    name: 'created_at',
+
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updateAt: Date;
 
   @OneToMany(() => Product, (product) => product.brand)

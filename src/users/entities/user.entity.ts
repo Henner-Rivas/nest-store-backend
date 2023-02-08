@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -20,15 +20,22 @@ export class User {
   role: string;
 
   @OneToOne(() => Customer, (customer) => customer.User, { nullable: true })
-  @JoinColumn()
+  @JoinColumn({ name: 'customer_id' })
   customer: Customer;
 
   @Column({
+    name: 'created_at',
+
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    name: 'updated_at',
+
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updateAt: Date;
 }

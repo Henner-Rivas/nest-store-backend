@@ -1,10 +1,13 @@
+import { Order } from 'src/users/entities/order.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
   OneToOne,
   JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -24,11 +27,20 @@ export class Customer {
   User: User;
 
   @Column({
+    name: 'created_at',
+
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updateAt: Date;
+
+  @OneToMany(() => Order, (order) => order.customer)
+  orders: Order[];
 }
