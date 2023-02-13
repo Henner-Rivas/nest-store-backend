@@ -6,13 +6,17 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { BrandsService } from './brands.service';
 import { UpdateBrandDto, CreateBrandDto } from './dto/brand.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { ApikeyGuard } from 'src/auth/guards/apikey.guard';
+import { Public } from 'src/auth/decorators/public.decortator';
 
 @ApiTags('brands')
 @Controller('brands')
+@UseGuards(ApikeyGuard)
 export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}
 
@@ -21,6 +25,7 @@ export class BrandsController {
     return this.brandsService.create(createBrandDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.brandsService.findAll();

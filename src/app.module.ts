@@ -13,6 +13,7 @@ import { firstValueFrom } from 'rxjs';
 import { DatabaseModule } from './database/database.module';
 import axios from 'axios';
 import { enviroments } from './enviromets';
+import { AuthModule } from './auth/auth.module';
 import config from './config';
 import * as Joi from 'joi';
 const API_KEY = '123456';
@@ -24,7 +25,7 @@ const API_KEY = '123456';
       isGlobal: true,
       load: [config],
       validationSchema: Joi.object({
-        API_KEY: Joi.number().required(),
+        API_KEY: Joi.required(),
         DATABASE_NAME: Joi.string().required(),
         DATABASE_PORT: Joi.number().required(),
         POSTGRES_DB: Joi.string().required(),
@@ -47,6 +48,7 @@ const API_KEY = '123456';
     }),
     CustomersModule,
     DatabaseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

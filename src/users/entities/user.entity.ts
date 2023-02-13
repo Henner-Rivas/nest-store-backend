@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Customer } from 'src/customers/entities/customer.entity';
 import {
   Column,
@@ -15,6 +16,7 @@ export class User {
   @Column({ type: 'varchar' })
   email: string;
   @Column({ type: 'varchar' })
+  @Exclude()
   password: string;
   @Column({ type: 'varchar' })
   role: string;

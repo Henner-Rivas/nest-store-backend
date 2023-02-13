@@ -8,12 +8,18 @@ import { ConfigService } from '@nestjs/config/dist';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from 'src/products/entities/product.entity';
+import { CustomersService } from 'src/customers/customers.service';
+import { Customer } from 'src/customers/entities/customer.entity';
+
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Product) private producRepo: Repository<Product>,
+    @InjectRepository(Customer)
+    private customerRepo: Repository<Customer>,
   ) {}
 
   findAll() {
@@ -21,22 +27,28 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    const product = this.userRepo.findOne({ id });
-    if (!product) {
-      throw new NotFoundException(`Product #${id} not found`);
+    const user = this.userRepo.findOne({ id });
+    if (!user) {
+      throw new NotFoundException(`user #${id} not found`);
     }
-    return product;
+    return user;
   }
 
-  create(data: CreateUserDto) {
-    const newProduct = this.userRepo.create(data);
-    return this.userRepo.save(newProduct);
+  async create(data: CreateUserDto) {
+    const newUser = this.userRepo.create(data);
+    const hashPassword = await bcrypt.hash(newUser.password, 10);
+    newUser.password = hashPassword;
+    if (data.customerId) {
+      const customer = await this.customerRepo.findOne(data.customerId);
+      newUser.customer = customer;
+    }
+    return this.userRepo.save(newUser);
   }
 
   async update(id: number, changes: UpdateUserDto) {
-    const product = await this.findOne(id);
-    this.userRepo.merge(product, changes);
-    return this.userRepo.save(product);
+    const user = await this.findOne(id);
+    this.userRepo.merge(user, changes);
+    return this.userRepo.save(user);
   }
 
   remove(id: number) {
@@ -50,5 +62,14 @@ export class UsersService {
       user,
       products: await this.producRepo.find(),
     };
+  }
+
+  async findByEmail(email: string) {
+    let user = await this.userRepo.findOne({ where: { email } });
+    console.log(
+      '🚀 ~ file: auth.service.ts:10 ~ AuthService ~ valitedateUser ~ user',
+      user,
+    );
+    return user;
   }
 }
