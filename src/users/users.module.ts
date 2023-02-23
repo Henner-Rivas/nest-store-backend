@@ -15,12 +15,19 @@ import { OrderProductService } from './services/order-product.service';
 import { CustomersModule } from 'src/customers/customers.module';
 import { CustomersService } from 'src/customers/customers.service';
 import { ProductsService } from 'src/products/products.service';
+import { ProfileController } from './controllers/profile.controller';
 @Module({
   imports: [
     ProductsModule,
+
     TypeOrmModule.forFeature([Product, User, Customer, Order, OrderProduct]),
   ],
-  controllers: [UsersController, OrdersController, OrderProductController],
+  controllers: [
+    UsersController,
+    OrdersController,
+    OrderProductController,
+    ProfileController,
+  ],
   providers: [UsersService, OrdersService, OrderProductService],
   exports: [UsersService],
 })

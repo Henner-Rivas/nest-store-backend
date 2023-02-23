@@ -16,6 +16,8 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
   constructor(
+    private productsService: ProductsService,
+
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Product) private producRepo: Repository<Product>,
     @InjectRepository(Customer)
@@ -23,7 +25,9 @@ export class UsersService {
   ) {}
 
   findAll() {
-    return this.userRepo.find();
+    return this.userRepo.find({
+      relations: ['customer'],
+    });
   }
 
   findOne(id: number) {
@@ -57,19 +61,31 @@ export class UsersService {
 
   async getOrderByUser(id: number) {
     const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`user #${id} not found`);
+    }
     return {
       date: new Date(),
       user,
-      products: await this.producRepo.find(),
+      products: await this.productsService.findAll(),
     };
   }
 
   async findByEmail(email: string) {
     let user = await this.userRepo.findOne({ where: { email } });
+
     console.log(
       '🚀 ~ file: auth.service.ts:10 ~ AuthService ~ valitedateUser ~ user',
       user,
     );
     return user;
+  }
+
+  ordersByCustomer(customerId: number) {
+    return this.userRepo.find({
+      where: {
+        customer: customerId,
+      },
+    });
   }
 }

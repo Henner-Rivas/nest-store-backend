@@ -14,7 +14,9 @@ export class OrdersService {
   ) {}
 
   findAll() {
-    return this.orderRepo.find();
+    return this.orderRepo.find({
+      relations: ['orderProduct', 'orderProduct.product'],
+    });
   }
 
   async findOne(id: number) {
@@ -47,5 +49,13 @@ export class OrdersService {
 
   remove(id: number) {
     return this.orderRepo.delete(id);
+  }
+
+  ordersByCustomer(customerId: number) {
+    return this.orderRepo.find({
+      where: {
+        customer: customerId,
+      },
+    });
   }
 }
