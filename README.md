@@ -48,7 +48,7 @@ $ npm run start:prod
 ## documentation with swagger
 
 ```bash
-http://localhost:3000/docs
+http://localhost:3002/docs
 ```
 
 ## Api en production
